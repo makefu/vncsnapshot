@@ -116,7 +116,7 @@ and so forth
 When taking multiple snapshots, take them every \fIrate\fP seconds; default 60.
 .SH "EXAMPLES"
 .TP
-vncsnapshot anhk-morpork:1 unseen.jpg
+vncsnapshot ankh-morpork:1 unseen.jpg
 Get a snapshot of screen 1 from the server \fBahnk-morpork\fP
 and save it in \fBunseen.jpg\fP. The entire screen is saved; the
 default transport is used.
