@@ -119,10 +119,6 @@ SOURCE=.\sockets.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\stdhdrs.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\tunnel.c
 # End Source File
 # Begin Source File
