@@ -128,12 +128,14 @@ and 30 pixels down.
 vncsnapshot \-rect 0x0\-800\-600 :1 pict.jpeg
 Get a snapshot that is 800 pixels from the right edge and 600 pixels
 from the bottom of the screen. It will extend to the screen edges,
-making it 800x600.
+making it 800x600. Alternatively, the rectangle could be given as
+\fB-rect 800x600-0-0\fP, which specifies the same region.
 .SH "AUTHOR"
 .LP
 Grant McDorman <grmcdorman@netscape.net>
 .br 
-Based on TightVNC <http://www.tightvnc.com>
+Based on TightVNC <http://www.tightvnc.com> and RealVNC
+<http://www.realvnc.com>.
 .SH "DISTRIBUTION"
 Source for vncsnapshot can be found at <http://vncsnapshot.sourceforge.net>.
 .SH "SEE ALSO"

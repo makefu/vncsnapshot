@@ -1,4 +1,6 @@
 1.1
+ * Included UltraVNC RFB definitions in header files. UltraVNC encodings
+   and scalings are not supported yet, however.
  * Merged Tight VNC 1.2.8 and RealVNC 3.3.7 sources
  * Merged Tight VNC 1.2.7 sources
  * When saving a sub-area of the server's screen, only that part is fetched

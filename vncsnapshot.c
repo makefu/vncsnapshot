@@ -90,20 +90,20 @@ main(int argc, char **argv)
     if (appData.rectX < 0) {
         appData.rectX = si.framebufferWidth + appData.rectX;
     } else if (appData.rectXNegative) {
-        appData.rectX = si.framebufferWidth - appData.rectX;
+        appData.rectX = si.framebufferWidth - appData.rectX - appData.rectWidth;
     }
     if (appData.rectY < 0) {
         appData.rectY = si.framebufferHeight + appData.rectY;
     } else if (appData.rectYNegative) {
-        appData.rectY = si.framebufferHeight - appData.rectY;
+        appData.rectY = si.framebufferHeight - appData.rectY - appData.rectHeight;
     }
     if (appData.rectX >= si.framebufferWidth || appData.rectX < 0) {
-        fprintf(stderr, "%s: Requested rectangle appData.rectX <%ld> is outside screen width <%d>, using 0\n",
+        fprintf(stderr, "%s: Requested rectangle x <%ld> is outside screen width <%d>, using 0\n",
                 programName, appData.rectX, si.framebufferWidth);
         appData.rectX = 0;
     }
     if (appData.rectY >= si.framebufferHeight || appData.rectY < 0) {
-        fprintf(stderr, "%s: Requested rectangle appData.rectY <%ld> is outside screen height <%d>, using 0\n",
+        fprintf(stderr, "%s: Requested rectangle y <%ld> is outside screen height <%d>, using 0\n",
                 programName, appData.rectY, si.framebufferHeight);
         appData.rectY = 0;
     }
@@ -118,13 +118,13 @@ main(int argc, char **argv)
         appData.rectHeight = si.framebufferHeight - appData.rectY;
     }
     if (appData.rectWidth <= 0 || appData.rectWidth > si.framebufferWidth - appData.rectX) {
-        fprintf(stderr, "%s: Requested rectangle width <%ld> is wider than screen width <%d>, using %ld\n",
-                programName, appData.rectWidth, si.framebufferWidth, si.framebufferWidth - appData.rectX);
+        fprintf(stderr, "%s: Requested rectangle width <%ld> plus offset <%ld> is wider than screen width <%d>, using %ld\n",
+                programName, appData.rectWidth, appData.rectX, si.framebufferWidth, si.framebufferWidth - appData.rectX);
         appData.rectWidth = si.framebufferWidth - appData.rectX;
     }
     if (appData.rectHeight <= 0 || appData.rectHeight > si.framebufferHeight - appData.rectY) {
-        fprintf(stderr, "%s: Requested rectangle height <%ld> is wider than screen height <%d>, using %ld\n",
-                programName, appData.rectHeight, si.framebufferHeight, si.framebufferHeight - appData.rectY);
+        fprintf(stderr, "%s: Requested rectangle height <%ld> plus offset <%ld> is wider than screen height <%d>, using %ld\n",
+                programName, appData.rectHeight, appData.rectY, si.framebufferHeight, si.framebufferHeight - appData.rectY);
         appData.rectHeight = si.framebufferHeight - appData.rectY;
     }
   if (!SendFramebufferUpdateRequest(appData.rectX, appData.rectY, appData.rectWidth,
