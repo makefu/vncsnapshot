@@ -7,6 +7,7 @@ BUILD.win32
 MANIFEST
 Makefile
 README
+RELEASE-NOTES.txt
 argsresources.c
 buffer.c
 cursor.c
@@ -26,6 +27,7 @@ vncsnapshot.dsp
 vncsnapshot.dsw
 vncsnapshot.c
 vncsnapshot.h
+web-page.html
 libjpeg/Makefile.bcc32
 libjpeg/jconfig.h
 libjpeg/jmorecfg.h
@@ -38,3 +40,6 @@ protocols/tight.c
 protocols/hextile.c
 zlib/Makefile.bcc32
 zlib/zlib.dsp
+
+
+< $Id$ >

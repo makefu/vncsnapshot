@@ -27,6 +27,7 @@
 /*
  * vncauth.c - Functions for VNC password management and authentication.
  */
+static char ID = "$Id$";
 
 /*
 #include <stdio.h>

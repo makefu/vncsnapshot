@@ -22,6 +22,7 @@
 /*
  * rfbproto.c - functions to deal with client side of RFB protocol.
  */
+static char ID = "$Id$";
 
 #ifdef WIN32
 #include "vncauth.h"

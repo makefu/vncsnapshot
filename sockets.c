@@ -20,6 +20,7 @@
 /*
  * sockets.c - functions to deal with sockets.
  */
+static char ID = "$Id$";
 
 #ifdef WIN32
 #include <winsock2.h>

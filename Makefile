@@ -1,4 +1,6 @@
 # Makefile for vncsnapshot, Unix/Linux platforms.
+#
+# $Id$
 
 #
 # INSTALLER: Adjust these lines to point to your installation's location of

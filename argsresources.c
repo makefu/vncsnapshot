@@ -20,6 +20,7 @@
 /*
  * argsresources.c - deal with command-line args and resources.
  */
+static char ID = "$Id$";
 
 #include "vncsnapshot.h"
 
@@ -183,19 +184,19 @@ GetArgsAndResources(int argc, char **argv)
         }
         end++;
         h = strtol(end, &end, 10);
-        if (end == NULL || end == rect || *end != '+') {
+        if (end == NULL || end == rect || (*end != '+' && *end != '-')) {
             fprintf(stderr, "%s: invalid rectangle specification %s\n",
                     programName, rect);
             usage();
         }
-        end++;
+        /* do not increment to get sign */
         x = strtol(end, &end, 10);
-        if (end == NULL || end == rect || *end != '+') {
+        if (end == NULL || end == rect || (*end != '+' && *end != '-')) {
             fprintf(stderr, "%s: invalid rectangle specification %s\n",
                     programName, rect);
             usage();
         }
-        end++;
+        /* do not increment to get sign */
         y = strtol(end, &end, 10);
         if (end == NULL || end == rect || *end != '\0') {
             fprintf(stderr, "%s: invalid rectangle specification %s\n",

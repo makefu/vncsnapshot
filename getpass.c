@@ -22,6 +22,7 @@
 /*
  * passwd.c - get password from console, Win32
  */
+static char ID = "$Id$";
 
 #include <conio.h>
 
