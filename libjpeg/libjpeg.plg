@@ -1,0 +1,215 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: libjpeg - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Build : warning : failed to (or don't know how to) build 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jutils.c'
+
+Creating temporary file "D:\TEMP\RSP563.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /Fp"Debug/libjpeg.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jcapimin.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jcapistd.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jccoefct.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jccolor.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jcdctmgr.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jchuff.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jcinit.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jcmainct.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jcmarker.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jcmaster.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jcomapi.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jcparam.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jcphuff.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jcprepct.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jcsample.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jctrans.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdapimin.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdapistd.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdatadst.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdatasrc.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdcoefct.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdcolor.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jddctmgr.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdhuff.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdinput.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdmainct.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdmarker.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdmaster.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdmerge.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdphuff.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdpostct.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdsample.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jdtrans.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jerror.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jfdctflt.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jfdctfst.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jfdctint.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jidctflt.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jidctfst.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jidctint.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jidctred.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jmemmgr.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jmemnobs.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jquant1.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jquant2.c"
+"D:\Code\vnc_winsrc\vncviewer\libjpeg\jutils.c"
+]
+Creating command line "cl.exe @D:\TEMP\RSP563.tmp" 
+Creating temporary file "D:\TEMP\RSP564.tmp" with contents
+[
+/nologo /out:"Debug\libjpeg.lib" 
+.\Debug\jcapimin.obj
+.\Debug\jcapistd.obj
+.\Debug\jccoefct.obj
+.\Debug\jccolor.obj
+.\Debug\jcdctmgr.obj
+.\Debug\jchuff.obj
+.\Debug\jcinit.obj
+.\Debug\jcmainct.obj
+.\Debug\jcmarker.obj
+.\Debug\jcmaster.obj
+.\Debug\jcomapi.obj
+.\Debug\jcparam.obj
+.\Debug\jcphuff.obj
+.\Debug\jcprepct.obj
+.\Debug\jcsample.obj
+.\Debug\jctrans.obj
+.\Debug\jdapimin.obj
+.\Debug\jdapistd.obj
+.\Debug\jdatadst.obj
+.\Debug\jdatasrc.obj
+.\Debug\jdcoefct.obj
+.\Debug\jdcolor.obj
+.\Debug\jddctmgr.obj
+.\Debug\jdhuff.obj
+.\Debug\jdinput.obj
+.\Debug\jdmainct.obj
+.\Debug\jdmarker.obj
+.\Debug\jdmaster.obj
+.\Debug\jdmerge.obj
+.\Debug\jdphuff.obj
+.\Debug\jdpostct.obj
+.\Debug\jdsample.obj
+.\Debug\jdtrans.obj
+.\Debug\jerror.obj
+.\Debug\jfdctflt.obj
+.\Debug\jfdctfst.obj
+.\Debug\jfdctint.obj
+.\Debug\jidctflt.obj
+.\Debug\jidctfst.obj
+.\Debug\jidctint.obj
+.\Debug\jidctred.obj
+.\Debug\jmemmgr.obj
+.\Debug\jmemnobs.obj
+.\Debug\jquant1.obj
+.\Debug\jquant2.obj
+.\Debug\jutils.obj
+]
+Creating command line "link.exe -lib @D:\TEMP\RSP564.tmp"
+<h3>Output Window</h3>
+Compiling...
+jcapimin.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jcapimin.c': No such file or directory
+jcapistd.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jcapistd.c': No such file or directory
+jccoefct.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jccoefct.c': No such file or directory
+jccolor.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jccolor.c': No such file or directory
+jcdctmgr.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jcdctmgr.c': No such file or directory
+jchuff.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jchuff.c': No such file or directory
+jcinit.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jcinit.c': No such file or directory
+jcmainct.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jcmainct.c': No such file or directory
+jcmarker.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jcmarker.c': No such file or directory
+jcmaster.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jcmaster.c': No such file or directory
+jcomapi.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jcomapi.c': No such file or directory
+jcparam.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jcparam.c': No such file or directory
+jcphuff.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jcphuff.c': No such file or directory
+jcprepct.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jcprepct.c': No such file or directory
+jcsample.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jcsample.c': No such file or directory
+jctrans.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jctrans.c': No such file or directory
+jdapimin.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdapimin.c': No such file or directory
+jdapistd.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdapistd.c': No such file or directory
+jdatadst.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdatadst.c': No such file or directory
+jdatasrc.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdatasrc.c': No such file or directory
+jdcoefct.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdcoefct.c': No such file or directory
+jdcolor.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdcolor.c': No such file or directory
+jddctmgr.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jddctmgr.c': No such file or directory
+jdhuff.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdhuff.c': No such file or directory
+jdinput.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdinput.c': No such file or directory
+jdmainct.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdmainct.c': No such file or directory
+jdmarker.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdmarker.c': No such file or directory
+jdmaster.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdmaster.c': No such file or directory
+jdmerge.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdmerge.c': No such file or directory
+jdphuff.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdphuff.c': No such file or directory
+jdpostct.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdpostct.c': No such file or directory
+jdsample.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdsample.c': No such file or directory
+jdtrans.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jdtrans.c': No such file or directory
+jerror.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jerror.c': No such file or directory
+jfdctflt.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jfdctflt.c': No such file or directory
+jfdctfst.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jfdctfst.c': No such file or directory
+jfdctint.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jfdctint.c': No such file or directory
+jidctflt.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jidctflt.c': No such file or directory
+jidctfst.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jidctfst.c': No such file or directory
+jidctint.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jidctint.c': No such file or directory
+jidctred.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jidctred.c': No such file or directory
+jmemmgr.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jmemmgr.c': No such file or directory
+jmemnobs.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jmemnobs.c': No such file or directory
+jquant1.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jquant1.c': No such file or directory
+jquant2.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jquant2.c': No such file or directory
+jutils.c
+fatal error C1083: Cannot open source file: 'D:\Code\vnc_winsrc\vncviewer\libjpeg\jutils.c': No such file or directory
+Error executing cl.exe.
+
+
+
+<h3>Results</h3>
+libjpeg.lib - 46 error(s), 1 warning(s)
+</pre>
+</body>
+</html>
