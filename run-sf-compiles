@@ -15,7 +15,7 @@ RELEASE=1.2a
 # sparc-solaris1 [R220] Sun Solaris (9) #1
 # sparc-solaris2 [R220] Sun Solaris (9) #2
 HOSTS='x86-openbsd1 x86-solaris1 x86-linux1 x86-linux2 x86-freebsd1 x86-netbsd1 amd64-linux1 alpha-linux1 ppc-osx1 ppc-osx2 sparc-solaris1'
-scp vncsnapshot-${RELEASE}-src.tar.bz2 cv-shell.sf.net:
+scp vncsnapshot-${RELEASE}-src.tar.bz2 cf-shell.sf.net:
 cmd="tar xjf vncsnapshot-${RELEASE}-src.tar.bz2;"
 cmd="${cmd}cp vncsnapshot-${RELEASE}/make_release_bin .;"
 for h in $HOSTS;do
