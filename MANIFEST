@@ -37,7 +37,6 @@ libjpeg/Makefile.bcc32
 libjpeg/jconfig.h
 libjpeg/jmorecfg.h
 libjpeg/libjpeg.dsp
-libjpeg/libjpeg.plg
 
 protocols/corre.c
 protocols/hextile.c
