@@ -94,6 +94,8 @@ typedef struct {
   int compressLevel;
   int qualityLevel;
   Bool useRemoteCursor;
+  Bool ignoreBlank; /* ignore blank screens */
+  Bool enableJPEG;
 
   int  saveQuality;
   char *outputFilename;
@@ -106,6 +108,7 @@ typedef struct {
   long rectHeight;
   long rectX;
   long rectY;
+    char gotCursorPos;
 } AppData;
 
 extern AppData appData;
@@ -127,8 +130,9 @@ extern int AllocateBuffer();
 extern void CopyDataToScreen(char *buffer, int x, int y, int w, int h);
 extern char *CopyScreenToData(int x, int y, int w, int h);
 extern void FillBufferRectangle(int x, int y, int w, int h, unsigned long pixel);
-extern void ShrinkBuffer(long *x, long *y, long *req_width, long *req_height, int oppositeX, int oppositeY);
+extern void ShrinkBuffer(long x, long y, long req_width, long req_height);
 extern void write_JPEG_file (char * filename, int quality, int width, int height);
+extern int BufferIsBlank();
 
 /* colour.c */
 
@@ -137,7 +141,8 @@ extern unsigned long BGR233ToPixel[];
 
 /* cursor.c */
 
-extern Bool HandleRichCursor(int xhot, int yhot, int width, int height);
+extern Bool HandleCursorShape(int xhot, int yhot, int width, int height, CARD32 enc);
+extern Bool HandleCursorPos(int x, int y);
 extern void SoftCursorLockArea(int x, int y, int w, int h);
 extern void SoftCursorUnlockScreen(void);
 extern void SoftCursorMove(int x, int y);

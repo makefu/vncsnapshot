@@ -5,6 +5,7 @@ Known bugs in vncsnapshot:
    and to appear when connecting via the server's 'Add New Client' option
    (i.e. -listen option for vncsnapshot). In addition, moving the cursor
    while vncsnapshot is connecting may result in the cursor being included
-   in the snapshot.
+   in the snapshot. The -cursor and -nocursor attempt to control this, but
+   are only workable for recent TightVNC servers.
 
 < $Id$ >

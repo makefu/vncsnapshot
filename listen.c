@@ -28,6 +28,7 @@ static const char *ID = "$Id$";
 #include <sys/wait.h>
 #include <sys/time.h>
 #include <sys/utsname.h>
+#include <sys/socket.h>
 
 typedef int SOCKET;
 #else

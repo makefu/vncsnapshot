@@ -21,7 +21,7 @@ EXTRAINCLUDES =
 
 # Compilation Flags. Season to taste.
 CC = gcc
-CDEBUGFLAGS = -O2
+CDEBUGFLAGS = -O2 -Wall
 
 # You shouldn't need to change anything below.
 INCLUDES = -I. $(ZLIB_INCLUDE) $(JPEG_INCLUDE) $(EXTRAINCLUDES)

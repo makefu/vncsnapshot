@@ -19,9 +19,17 @@ This manual page documents version 1.0 beta 2 of vncsnapshot.
 .SH "OPTIONS"
 .LP 
 .TP
+\fB\-allowblank\fR
+.TP
+Allow blank (all black) images as snapshots. See \fB-ignoreblank\fP.
 \fB\-compresslevel\fR  \fIlevel\fP
 Compress network messages to level, if the server supports it. level is between 0 and 9, with 0 being no compression 
 and 9 the maximum. The default is 4.
+.TP
+\fB\-cursor\fR
+.TP
+Include the cursor in snapshots. Only effective if the remote server is a
+TightVNC version; otherwise ignored.
 .TP 
 \fB\-encodings\fR \fIlist\fP
 Use the given encodings. The default is
@@ -34,8 +42,31 @@ or
 .br
 when VNC snapshot and the server are on the same machine.
 .TP
+\fB\-ignoreblank\fR
+.TP
+Ignore blank (all black) screens; do not save the screen until a screen that
+is not all black is received. This is useful with some servers that send an
+initial all-black screen before sending the actual screen. This is the
+default.
+.TP
+\fB\-jpeg\fR
+.TP
+Request the remote server to use JPEG-style encoding when sending the image,
+if possible. Currently only supported by TightVNC (and servers derived from
+it). This is the default.
+.TP
+\fB\-nocursor\fR
+Do not include the cursor in snapshots. Only effective if the remote server is a
+TightVNC version; otherwise ignored. This is the default.
+.TP
+\fB\-nojpeg\fR
+.TP
+Request the remote server to \fBnot\fP use JPEG-style encoding when sending the image,
+if possible. Currently only supported by TightVNC (and servers derived from
+it).
+.TP
 \fB\-listen\fR \fIlocal-display\fP
-(Unix/Linux only) Do not connect to a server; wait for the server to
+Do not connect to a server; wait for the server to
 connect to the specified local "display". Cannot be used with \fB\-tunnel\fP or \fB\-via\fP options.
 .TP
 \fB\-passwd\fR \fIfilename\fP
@@ -58,14 +89,15 @@ offset from the opposite edge.
 
 A zero value for the width or height makes the snapshot extend
 to the right or bottom of the screen, respectively.
+
 The default is the entire screen.
 .TP
 \fB\-tunnel\fR
-(Unix/Linux only) Connect to the remote server via an SSH tunnel.
+Connect to the remote server via an SSH tunnel.
 Cannot be used with \fB\-listen\fP or \fB\-via\fP options.
 .TP
 \fB\-via\fR \fIgateway\fP
-(Unix/Linux only) Connect to the remote server via an SSH tunnel on the host
+Connect to the remote server via an SSH tunnel on the host
 \fIgateway\fP.
 Cannot be used with \fB\-listen\fP or \fB\-tunnel\fP options.
 .TP
@@ -73,8 +105,9 @@ Cannot be used with \fB\-listen\fP or \fB\-tunnel\fP options.
 Print messages; default.
 .TP
 \fB\-vncQuality \fIquality\fP
-Use the specified image  quality  level  (0-9)  for
-tight encoding. The default is 9.
+Use the specified image quality level (0-9) for
+tight encoding. The default is 9. Only effective if the remote server is a
+TightVNC version; otherwise ignored.
 .SH "EXAMPLES"
 .TP
 vncsnapshot anhk-morpork:1 unseen.jpg

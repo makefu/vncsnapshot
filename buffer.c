@@ -33,6 +33,7 @@ static const char *ID = "$Id$";
 static void BufferPixelToRGB(unsigned long pixel, int *r, int *g, int *b);
 
 static char * rawBuffer = NULL;
+static char   bufferBlank = 1;
 
 #define RAW_BYTES_PER_PIXEL 3   /* size of pixel in raw buffer */
 #define MY_BYTES_PER_PIXEL 4    /* size of pixel in VNC buffer */
@@ -100,6 +101,9 @@ CopyDataToScreen(char *buffer, int x, int y, int w, int h)
 
     for (row = 0; row < h; row++) {
         for (col = 0; col < w; col++) {
+            bufferBlank &= buffer[0] == 0 &&
+                           buffer[1] == 0 &&
+                           buffer[2] == 0;
             rawBuffer[start++] = *buffer++;
             rawBuffer[start++] = *buffer++;
             rawBuffer[start++] = *buffer++;
@@ -149,6 +153,8 @@ FillBufferRectangle(int x, int y, int w, int h, unsigned long pixel)
 
     BufferPixelToRGB(pixel, &r, &g, &b);
 
+    bufferBlank &= r == 0 && g == 0 && b == 0;
+
     stride = si.framebufferWidth * RAW_BYTES_PER_PIXEL - w * RAW_BYTES_PER_PIXEL;
     start = (x + y * si.framebufferWidth) * RAW_BYTES_PER_PIXEL;
     for (row = 0; row < h; row++) {
@@ -161,88 +167,10 @@ FillBufferRectangle(int x, int y, int w, int h, unsigned long pixel)
     }
 }
 
-
-void
-ShrinkBuffer(long *x, long *y, long *req_width, long *req_height, int oppositeX, int oppositeY)
+int
+BufferIsBlank()
 {
-    int start;
-    int stride;
-    int row, col;
-    char *cp;
-
-    /*
-     * Negative X/Y implies from opposite edge.
-    */
-    if (*x < 0) {
-        *x = si.framebufferWidth + *x;
-    } else if (oppositeX) {
-        *x = si.framebufferWidth - *x;
-    }
-    if (*y < 0) {
-        *y = si.framebufferHeight + *y;
-    } else if (oppositeY) {
-        *y = si.framebufferHeight - *y;
-    }
-    if (*x >= si.framebufferWidth || *x < 0) {
-        fprintf(stderr, "%s: Requested rectangle *x <%ld> is outside screen width <%d>, using 0\n",
-                programName, *x, si.framebufferWidth);
-        *x = 0;
-    }
-    if (*y >= si.framebufferHeight || *y < 0) {
-        fprintf(stderr, "%s: Requested rectangle *y <%ld> is outside screen height <%d>, using 0\n",
-                programName, *y, si.framebufferHeight);
-        *y = 0;
-    }
-
-    /*
-     * Width/height of 0 means to edge.
-     */
-    if (*req_width == 0) {
-        *req_width = si.framebufferWidth - *x;
-    }
-    if (*req_height == 0) {
-        *req_height = si.framebufferHeight - *y;
-    }
-    if (*req_width <= 0 || *req_width > si.framebufferWidth - *x) {
-        fprintf(stderr, "%s: Requested rectangle width <%ld> is wider than screen width <%d>, using %ld\n",
-                programName, *req_width, si.framebufferWidth, si.framebufferWidth - *x);
-        *req_width = si.framebufferWidth - *x;
-    }
-    if (*req_height <= 0 || *req_height > si.framebufferHeight - *y) {
-        fprintf(stderr, "%s: Requested rectangle height <%ld> is wider than screen height <%d>, using %ld\n",
-                programName, *req_height, si.framebufferHeight, si.framebufferHeight - *y);
-        *req_height = si.framebufferHeight - *y;
-    }
-
-    /*
-     * Don't bother if x and y are zero and the width is the same.
-     */
-    if (*x == 0 && *y == 0 && *req_width == si.framebufferWidth) {
-        return;
-    }
-
-    /*
-     * Rather than creating a copy, we just move in-place. Since we are
-     * doing this from the start of the image, there is no problem
-     * with overlapping moves.
-     */
-
-    stride = si.framebufferWidth * RAW_BYTES_PER_PIXEL - *req_width * RAW_BYTES_PER_PIXEL;
-    start = (*x + *y * si.framebufferWidth) * RAW_BYTES_PER_PIXEL;
-
-
-    cp = rawBuffer;
-
-    for (row = 0; row < *req_height; row++) {
-        for (col = 0; col < *req_width; col++) {
-            *cp++ = rawBuffer[start++];
-            *cp++ = rawBuffer[start++];
-            *cp++ = rawBuffer[start++];
-        }
-        start += stride;
-    }
-
-    
+    return bufferBlank;
 }
 
 /*
@@ -376,3 +304,43 @@ BufferPixelToRGB(unsigned long pixel, int *r, int *g, int *b)
     *b = (pixel >> myFormat.blueShift) & myFormat.blueMax;
     *g = (pixel >> myFormat.greenShift) & myFormat.greenMax;
 }
+
+void
+ShrinkBuffer(long x, long y, long req_width, long req_height)
+{
+    int start;
+    int stride;
+    int row, col;
+    char *cp;
+
+
+    /*
+     * Don't bother if x and y are zero and the width is the same.
+     */
+    if (x == 0 && y == 0 && req_width == si.framebufferWidth) {
+        return;
+    }
+
+    /*
+     * Rather than creating a copy, we just move in-place. Since we are
+     * doing this from the start of the image, there is no problem
+     * with overlapping moves.
+     */
+
+    stride = si.framebufferWidth * RAW_BYTES_PER_PIXEL - req_width * RAW_BYTES_PER_PIXEL;
+    start = (x + y * si.framebufferWidth) * RAW_BYTES_PER_PIXEL;
+
+
+    cp = rawBuffer;
+
+    for (row = 0; row < req_height; row++) {
+        for (col = 0; col < req_width; col++) {
+            *cp++ = rawBuffer[start++];
+            *cp++ = rawBuffer[start++];
+            *cp++ = rawBuffer[start++];
+        }
+        start += stride;
+    }
+    
+}
+  

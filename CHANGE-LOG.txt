@@ -1,4 +1,12 @@
 1.1
+ * Merged Tight VNC 1.2.8 and RealVNC 3.3.7 sources
+ * Merged Tight VNC 1.2.7 sources
+ * When saving a sub-area of the server's screen, only that part is fetched
+   (formerly the entire screen was fetched)
+ * New '-ignoreblank' and '-allowblank' to work around RealVNC servers that
+   send an initial blank screen.
+ * Now supports '-cursor' and '-nocursor' options; unfortunately these only
+   work for recent TightVNC servers
  * Merged RealVNC 3.3.6 sources
  * Now supports both TightVNC 'tight' and 'zlib' encodings and RealVNC
    'zrle' encoding.

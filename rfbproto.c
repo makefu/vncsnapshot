@@ -327,6 +327,7 @@ Bool SendSetPixelFormat()
   spf.format.redMax = Swap16IfLE(spf.format.redMax);
   spf.format.greenMax = Swap16IfLE(spf.format.greenMax);
   spf.format.blueMax = Swap16IfLE(spf.format.blueMax);
+    PrintPixelFormat(&myFormat);
 
   return WriteToRFBServer((char *)&spf, sz_rfbSetPixelFormatMsg);
 }
@@ -367,7 +368,7 @@ Bool SendSetEncodings()
 	requestLastRectEncoding = True;
 	if (appData.compressLevel >= 0 && appData.compressLevel <= 9)
 	  requestCompressLevel = True;
-	if (appData.qualityLevel >= 0 && appData.qualityLevel <= 9)
+	if (appData.enableJPEG)
 	  requestQualityLevel = True;
       } else if (strncasecmp(encStr,"hextile",encStrLen) == 0) {
 	encs[se->nEncodings++] = Swap32IfLE(rfbEncodingHextile);
@@ -394,14 +395,18 @@ Bool SendSetEncodings()
     }
 
     if (se->nEncodings < MAX_ENCODINGS && requestQualityLevel) {
+      if (appData.qualityLevel < 0 || appData.qualityLevel > 9)
+        appData.qualityLevel = 5;
       encs[se->nEncodings++] = Swap32IfLE(appData.qualityLevel +
 					  rfbEncodingQualityLevel0);
     }
 
-    if (appData.useRemoteCursor) {
+      if (se->nEncodings < MAX_ENCODINGS)
+	encs[se->nEncodings++] = Swap32IfLE(rfbEncodingXCursor);
       if (se->nEncodings < MAX_ENCODINGS)
 	encs[se->nEncodings++] = Swap32IfLE(rfbEncodingRichCursor);
-    }
+      if (se->nEncodings < MAX_ENCODINGS)
+	encs[se->nEncodings++] = Swap32IfLE(rfbEncodingPointerPos);
 
     if (se->nEncodings < MAX_ENCODINGS && requestLastRectEncoding) {
       encs[se->nEncodings++] = Swap32IfLE(rfbEncodingLastRect);
@@ -441,14 +446,19 @@ Bool SendSetEncodings()
       encs[se->nEncodings++] = Swap32IfLE(rfbEncodingCompressLevel1);
     }
 
-    if (appData.qualityLevel >= 0 && appData.qualityLevel <= 9) {
+    if (appData.enableJPEG) {
+      if (appData.qualityLevel < 0 || appData.qualityLevel > 9)
+	appData.qualityLevel = 5;
       encs[se->nEncodings++] = Swap32IfLE(appData.qualityLevel +
 					  rfbEncodingQualityLevel0);
     }
 
-    if (appData.useRemoteCursor) {
-      encs[se->nEncodings++] = Swap32IfLE(rfbEncodingRichCursor);
-    }
+      if (se->nEncodings < MAX_ENCODINGS)
+        encs[se->nEncodings++] = Swap32IfLE(rfbEncodingXCursor);
+      if (se->nEncodings < MAX_ENCODINGS)
+        encs[se->nEncodings++] = Swap32IfLE(rfbEncodingRichCursor);
+      if (se->nEncodings < MAX_ENCODINGS)
+	encs[se->nEncodings++] = Swap32IfLE(rfbEncodingPointerPos);
 
   }
 
@@ -471,6 +481,15 @@ SendIncrementalFramebufferUpdateRequest()
 				      si.framebufferHeight, True);
 }
 
+Bool RequestNewUpdate()
+{
+  if (!SendFramebufferUpdateRequest(appData.rectX, appData.rectY, appData.rectWidth,
+                                      appData.rectHeight, True)) {
+      return False;
+  }
+
+  return True;
+}
 
 /*
  * HandleRFBServerMessage.
@@ -517,14 +536,24 @@ HandleRFBServerMessage()
       rect.encoding = Swap32IfLE(rect.encoding);
 
       if (rect.encoding == rfbEncodingXCursor) {
-          fprintf(stderr, "Received unsupported rfbEncodingXCursor\n");
-	  return False; /* unsupported */
-      }
-      if (rect.encoding == rfbEncodingRichCursor) {
-	if (!HandleRichCursor(rect.r.x, rect.r.y, rect.r.w, rect.r.h)) {
+	if (!HandleCursorShape(rect.r.x, rect.r.y, rect.r.w, rect.r.h, rfbEncodingXCursor)) {
 	  return False;
 	}
         continue;
+      }
+      if (rect.encoding == rfbEncodingRichCursor) {
+	if (!HandleCursorShape(rect.r.x, rect.r.y, rect.r.w, rect.r.h, rfbEncodingRichCursor)) {
+	  return False;
+	}
+        continue;
+      }
+
+      if (rect.encoding == rfbEncodingPointerPos) {
+	if (!HandleCursorPos(rect.r.x, rect.r.y)) {
+	  return False;
+	}
+        appData.gotCursorPos = 1;
+	continue;
       }
 
       if ((rect.r.x + rect.r.w > si.framebufferWidth) ||
@@ -557,7 +586,6 @@ HandleRFBServerMessage()
 
 	  if (!ReadFromRFBServer(buffer,bytesPerLine * linesToRead))
 	    return False;
-
 	  CopyDataToScreen(buffer, rect.r.x, rect.r.y, rect.r.w,
 			   linesToRead);
 
@@ -642,7 +670,17 @@ HandleRFBServerMessage()
         /* Done. Save the screen image. */
     }
 
-      return False;
+      /* RealVNC sometimes returns an initial black screen. */
+      if (BufferIsBlank() && appData.ignoreBlank) {
+          if (!appData.quiet && appData.ignoreBlank != 1) {
+              /* user did not specify both -quiet and -ignoreblank */
+              fprintf(stderr, "Warning: discarding received blank screen (use -allowblank to accept,\n   or -ignoreblank to suppress this message)\n");
+              appData.ignoreBlank = 1;
+          }
+          RequestNewUpdate();
+      } else {
+          return False;
+      }
 
     break;
   }

@@ -54,7 +54,7 @@ rdr::FdInStream* fis;
 rdr::FdOutStream* fos;
 Bool sameMachine = False;
 
-static Bool rfbsockReady = False;
+/*static Bool rfbsockReady = False;*/
 
 /*
  * InitializeSockets is called on startup. It will do any required one-time setup

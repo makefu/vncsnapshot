@@ -1,9 +1,30 @@
-Release Notes for VNC Snapshot 1.0 Beta 1
+Release Notes for VNC Snapshot 1.1
 =========================================
 
-This is the first release of VNC snapshot. It has been tested on Windows,
+This is the second release of VNC snapshot. It has been tested on Windows,
 Linux and Solaris Sparc systems.
 
--listen, -tunnel, and -via are not supported for Windows systems yet.
+This version merges the TightVNC 1.2.7 and RealVNC 3.3.6 code, including the
+ZRLE encoding.
 
-< $Id >
+Two new pairs of options are available.
+
+The first is -cursor and -nocursor, which cause the remote cursor to be
+included, or excluded, from the snapshot. They will work with TightVNC
+servers only, unfortunately.
+
+The second is -allowblank and -ignoreblank, which cause blank (all black)
+screens to be saved, or ignored. -ignoreblank is the default and is
+appropriate for recent RealVNC servers on Windows systems, which send an
+all-blank screen at first before sending the actual image.
+
+Performance improvements have also been made when fetching a sub-rectangle
+of the screen; previously the entire screen would be retreived from the
+remote server, and the sub-rectangle extracted from that. Now, only the area
+to be saved is retrieved. This should reduce the amount of data sent across
+the network.
+
+Note: -listen, -tunnel, and -via are implemented but untested for Windows
+systems.
+
+< $Id$ >

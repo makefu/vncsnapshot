@@ -36,23 +36,27 @@ typedef struct {
     int (*set)(int *argc, char ***argv, void *arg, int value);
     void *arg;
     int   value;
+    const char *optiondesc;
 } Options;
 
 
 /* Options - excluding -listen, -tunnel, and -via */
 Options cmdLineOptions[] = {
-  {"-passwd",        setString, &appData.passwordFile, 0},
-  {"-encodings",     setString, &appData.encodingsString, 0},
-  {"-compresslevel", setNumber, &appData.compressLevel, 0},
-  {"-vncQuality",    setNumber, &appData.qualityLevel, 0},
-  {"-quality",       setNumber, &appData.saveQuality, 0},
-  {"-debug",         setFlag,   &appData.debug, 0},
-  {"-quiet",         setFlag,   &appData.quiet, 1},
-  {"-verbose",       setFlag,   &appData.quiet, 0},
-  {"-rect",          setString, &rect, 0},
-    /* soft cursor doesn't include cursor location. Sigh. */
-/*  {"-cursor",        setFlag, &appData.useRemoteCursor, 1},
-  {"-nocursor",      setFlag, &appData.useRemoteCursor, 0},*/
+  {"-allowblank",    setFlag,   &appData.ignoreBlank, 0, ": allow blank images"},
+  {"-compresslevel", setNumber, &appData.compressLevel, 0, " <COMPRESS-VALUE> (0..9: 0-fast, 9-best)"},
+  {"-cursor",        setFlag,   &appData.useRemoteCursor, 1, ": include remote cursor"},
+  {"-debug",         setFlag,   &appData.debug, 0, ": enable debug printout"},
+  {"-encodings",     setString, &appData.encodingsString, 0, " <ENCODING-LIST> (e.g. \"tight copyrect\")"},
+  {"-ignoreblank",   setFlag,   &appData.ignoreBlank, 1, ": ignore blank images"},
+  {"-jpeg",          setFlag,   &appData.enableJPEG, 1, ": use JPEG transmission encoding"},
+  {"-nocursor",      setFlag,   &appData.useRemoteCursor, 0, ": do not include remote cursor"},
+  {"-nojpeg",        setFlag,   &appData.enableJPEG, 0, ": do not use JPEG transmission encoding"},
+  {"-passwd",        setString, &appData.passwordFile, 0, " <PASSWD-FILENAME>: read password from file"},
+  {"-quality",       setNumber, &appData.saveQuality, 0, " <JPEG-QUALITY-VALUE>: output file quality level, percent (0..100)"},
+  {"-quiet",         setFlag,   &appData.quiet, 1, ": do not output messages"},
+  {"-rect",          setString, &rect, 0, " wxh+x+y: define rectangle to capture (default entire screen)"},
+  {"-verbose",       setFlag,   &appData.quiet, 0, ": output messages"},
+  {"-vncQuality",    setNumber, &appData.qualityLevel, 0, " <JPEG-QUALITY-VALUE>: transmission quality level (0..9: 0-low, 9-high)"},
   {NULL, NULL, NULL, 0}
 };
 
@@ -80,12 +84,15 @@ AppData appData = {
     0,      /* debug */
     4,      /* compressLevel */
     9,      /* qualityLevel */
-    0,      /* useRemoteCursor [not useful] */
+    -1,     /* useRemoteCursor */
+    -1,     /* ignoreBlank */
+    -1,     /* enableJPEG */
     100,    /* saveQuality */
     NULL,   /* outputFilename */
     0,      /* quiet */
     0, 0,   /* rect width, height */
     0, 0,   /* rect x, y */
+    0,      /* gotCursorPos (-cursor, -nocursor worked) */
     };
 
 
@@ -111,26 +118,35 @@ removeArgs(int *argc, char** argv, int idx, int nargs)
 void
 usage(void)
 {
+  int i;
   fprintf(stderr,
-	  "TightVNC snapshot version " VNC_SNAPSHOT_VERSION " (based on TightVNC 1.2.2 and RealVNC 3.3.6)\n"
+	  "TightVNC snapshot version " VNC_SNAPSHOT_VERSION " (based on TightVNC 1.2.8 and RealVNC 3.3.7)\n"
 	  "\n"
 	  "Usage: %s [<OPTIONS>] [<HOST>]:<DISPLAY#> filename\n"
 	  "       %s [<OPTIONS>] -listen [<DISPLAY#>] filename\n"
 	  "       %s [<OPTIONS>] -tunnel <HOST>:<DISPLAY#> filename\n"
 	  "       %s [<OPTIONS>] -via <GATEWAY> [<HOST>]:<DISPLAY#> filename\n"
 	  "\n"
-	  "<OPTIONS> are:\n"
-	  "        -passwd <PASSWD-FILENAME>\n"
-	  "        -encodings <ENCODING-LIST> (e.g. \"tight copyrect\")\n"
-	  "        -compresslevel <COMPRESS-VALUE> (0..9: 0-fast, 9-best)\n"
-	  "        -vncQuality <JPEG-QUALITY-VALUE> (0..9: 0-low, 9-high)\n"
-          "        -quality <JPEG-QUALITY-VALUE> (0..100: 0-low, 100-high)\n"
-          "        -quiet\n"
-          "        -verbose\n"
-          "        -rect wxh+x+y\n"
-/*	  "        -cursor\n"
-	  "        -nocursor\n"*/
+	  "<OPTIONS> are:"
 	  "\n", programName, programName, programName, programName);
+    for (i = 0; cmdLineOptions[i].optionstring; i++) {
+        fprintf(stderr, 
+	  "        %s", cmdLineOptions[i].optionstring);
+        if (cmdLineOptions[i].optiondesc) {
+            fprintf(stderr, "%s", cmdLineOptions[i].optiondesc);
+        }
+        if (cmdLineOptions[i].set == setFlag && *(Bool *)cmdLineOptions[i].arg) {
+            fprintf(stderr, " (default)");
+        } else if (cmdLineOptions[i].set == setNumber) {
+            fprintf(stderr, " (default %d)", *(int *)cmdLineOptions[i].arg);
+        } else if (cmdLineOptions[i].set == setString) {
+            char *str = *(char **)cmdLineOptions[i].arg;
+            if (str != NULL && !*str) {
+                fprintf(stderr, " (default %s)", str);
+            }
+        }
+        fprintf(stderr, "\n");
+    }
   exit(1);
 }
 
@@ -148,6 +164,9 @@ GetArgsAndResources(int argc, char **argv)
   int   argsleft;
   char **arg;
   int processed;
+  char *vncServerName, *colonPos;
+  int len, portOffset;
+
 
   argsleft = argc;
   arg = argv+1;
@@ -235,6 +254,7 @@ GetArgsAndResources(int argc, char **argv)
 
   if (argc != 3) {
     usage();
+    return; /* keep gcc -Wall happy */
   } else {
     vncServerName = argv[0];
     appData.outputFilename = argv[1];
@@ -248,18 +268,27 @@ GetArgsAndResources(int argc, char **argv)
     exit(1);
   }
 
-  for (i = 0; vncServerName[i] != ':' && vncServerName[i] != 0; i++);
-
-  strncpy(vncServerHost, vncServerName, i);
-
-  if (vncServerName[i] == ':') {
-    vncServerPort = atoi(&vncServerName[i+1]);
+  colonPos = strchr(vncServerName, ':');
+  if (colonPos == NULL) {
+    /* No colon -- use default port number */
+    strcpy(vncServerHost, vncServerName);
+    vncServerPort = SERVER_PORT_OFFSET;
   } else {
-    vncServerPort = 0;
+    memcpy(vncServerHost, vncServerName, colonPos - vncServerName);
+    vncServerHost[colonPos - vncServerName] = '\0';
+    len = strlen(colonPos + 1);
+    portOffset = SERVER_PORT_OFFSET;
+    if (colonPos[1] == ':') {
+      /* Two colons -- interpret as a port number */
+      colonPos++;
+      len--;
+      portOffset = 0;
+    }
+    if (!len || strspn(colonPos + 1, "0123456789") != len) {
+      usage();
+    }
+    vncServerPort = atoi(colonPos + 1) + portOffset;
   }
-
-  if (vncServerPort < 100)
-    vncServerPort += SERVER_PORT_OFFSET;
 }
 
 static int setNumber(int *argc, char ***argv, void *arg, int value)

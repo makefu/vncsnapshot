@@ -40,7 +40,7 @@ static const char *ID = "$Id$";
 #include "stdhdrs.h"
 #include "vncauth.h"
 #include "d3des.h"
-
+#include <memory.h>
 
 /*
  * We use a fixed key to store passwords, since we assume that our local
