@@ -1,8 +1,21 @@
+1.2a
+ * Fixed bug where the snapshot, by default, would start 60 pixels
+   down from the top of the screen
+ * Fixed up Windows zlib.dsp (1.2 release was still 1.1.x zlib.dsp,
+   despite change log and README entries)
+ * Minor enhancments to developer make_release_bin and run-sf-compiles
+   scripts
+ * Fix to manual page formatting
+ * Missing change log entry for 1.2 added (-count/-fps options not
+   mentioned, but are in README)
 1.2
  * Upgraded Windows build to Zlib 1.2.1
  * Added vncpasswd to the build
  * Fixed bug where snapshot thought it had got a non-blank screen when
    in fact it hadn't (bug resulted in blank screen captures)
+ * Fixed to compile on Mac OS X
+ * Added -count and -fps options for multiple screen shots (does not
+   work with all servers)
 1.1
  * Included UltraVNC RFB definitions in header files. UltraVNC encodings
    and scalings are not supported yet, however.

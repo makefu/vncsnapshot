@@ -18,8 +18,8 @@
 #   SunOS Solaris Sparc (sun4u)
 #   SunOS Solaris x86
 #
+RELEASE=$1
 
-	cd vncsnapshot-1.2
 OS="`uname -s`"
   CC=gcc
   CDEBUGFLAGS="-O2 -Wall"
@@ -37,6 +37,7 @@ if [ "$OS" = "SunOS" ];then
 fi
 
 # make sure we're clean
+cd vncsnapshot-$RELEASE
 make clean
 cd ..
 cd jpeg-6b
@@ -101,7 +102,7 @@ elif [ "$OS" = "FreeBSD" ];then
   vLINK_cc="LINK.cc="
 fi
 
-cd vncsnapshot-1.2
+cd vncsnapshot-$RELEASE
 if $MAKE CPLUSPLUS="$CXX" CC="$CC" EXTRALIBS="$EXTRALIBS" CDEBUGFLAGS="$CDEBUGFLAGS" CXX="$CXX" ZLIB_INCLUDE="$ZLIB_INCLUDE" ZLIB_LIB="$ZLIB_LIB" JPEG_INCLUDE="$JPEG_INCLUDE" JPEG_LIB="$JPEG_LIB" $vCOMPILE_cc"$COMPILE_cc" $vLINK_c"$LINK_c" $vLINK_cc"$LINK_cc";then 
 	HOST=`uname -srm | sed -e 's/ /-/g'`
 	if expr "$HOST" : "Linux"; then

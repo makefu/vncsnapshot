@@ -10,6 +10,7 @@ Known bugs in vncsnapshot:
 
  * When getting multiple snapshots (i.e. using -count with a value greater
    than 1) the second and subsequent images are messed up with some VNC
-   servers. This has been observed with the KDE server ("KDE Desktop Sharing").
+   servers. This has been observed with the KDE server ("KDE Desktop
+   Sharing"), and with Ultra VNC.
 
 < $Id$ >

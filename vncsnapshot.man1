@@ -1,4 +1,5 @@
 .TH "vncsnapshot" "1" "1.0beta2" "Grant McDorman" "VNC"
+.\" $Id$
 .SH "NAME"
 .LP 
 vncsnapshot \- grab snapshots from VNC servers
@@ -15,19 +16,17 @@ vncsnapshot [\fIoptions\fP] \-via \fIgateway\fP \fIhost\fP:\fIdisplay\fP \fIJPEG
 .LP 
 VNC Snapshot is a command\-line program for VNC. It will save a JPEG image of the VNC server's screen.
 .LP
-This manual page documents version 1.2 of vncsnapshot.
+This manual page documents version 1.2a of vncsnapshot.
 .SH "OPTIONS"
 .LP 
 .TP
 \fB\-allowblank\fR
-.TP
 Allow blank (all black) images as snapshots. See \fB-ignoreblank\fP.
 \fB\-compresslevel\fR  \fIlevel\fP
 Compress network messages to level, if the server supports it. level is between 0 and 9, with 0 being no compression 
 and 9 the maximum. The default is 4.
 .TP
 \fB\-cursor\fR
-.TP
 Include the cursor in snapshots. Only effective if the remote server is a
 TightVNC version; otherwise ignored.
 .TP 
@@ -43,14 +42,12 @@ or
 when VNC snapshot and the server are on the same machine.
 .TP
 \fB\-ignoreblank\fR
-.TP
 Ignore blank (all black) screens; do not save the screen until a screen that
 is not all black is received. This is useful with some servers that send an
 initial all-black screen before sending the actual screen. This is the
 default.
 .TP
 \fB\-jpeg\fR
-.TP
 Request the remote server to use JPEG-style encoding when sending the image,
 if possible. Currently only supported by TightVNC (and servers derived from
 it). This is the default.
@@ -60,7 +57,6 @@ Do not include the cursor in snapshots. Only effective if the remote server is a
 TightVNC version; otherwise ignored. This is the default.
 .TP
 \fB\-nojpeg\fR
-.TP
 Request the remote server to \fBnot\fP use JPEG-style encoding when sending the image,
 if possible. Currently only supported by TightVNC (and servers derived from
 it).
