@@ -21,7 +21,7 @@
 /*
  * tunnel.c - tunneling support (e.g. for using standalone SSH installation)
  */
-static char ID = "$Id$";
+static const char *ID = "$Id$";
 
 #ifndef WIN32
 #include <unistd.h>

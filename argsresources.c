@@ -20,7 +20,7 @@
 /*
  * argsresources.c - deal with command-line args and resources.
  */
-static char ID = "$Id$";
+static const char *ID = "$Id$";
 
 #include "vncsnapshot.h"
 

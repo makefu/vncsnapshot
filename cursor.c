@@ -20,7 +20,7 @@
 /*
  * cursor.c - code to support cursor shape updates (XCursor, RichCursor).
  */
-static char ID = "$Id$";
+static const char *ID = "$Id$";
 
 #include "vncsnapshot.h"
 

@@ -20,7 +20,7 @@
 /*
  * listen.c - listen for incoming connections
  */
-static char ID = "$Id$";
+static const char *ID = "$Id$";
 
 #ifndef WIN32
 #include <unistd.h>

@@ -20,7 +20,7 @@
 /*
  * buffer.c - functions to deal with the raw image buffer.
  */
-static char ID = "$Id$";
+static const char *ID = "$Id$";
 
 #include "vncsnapshot.h"
 

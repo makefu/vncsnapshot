@@ -20,7 +20,7 @@
 /*
  * vncsnapshot.c - the Xt-based VNC snapshot.
  */
-static char ID = "$Id$";
+static const char *ID = "$Id$";
 
 #include "vncsnapshot.h"
 
