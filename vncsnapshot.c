@@ -18,7 +18,7 @@
  */
 
 /*
- * vncsnapshot.c - the Xt-based VNC snapshot.
+ * vncsnapshot.c - the VNC snapshot.
  */
 static const char *ID = "$Id$";
 
@@ -32,7 +32,10 @@ main(int argc, char **argv)
   int i;
   programName = argv[0];
 
-#ifndef WIN32
+  if (!InitializeSockets()) {
+      return 1;
+  }
+
   /* The -listen option is used to make us a daemon process which listens for
      incoming connections from servers, rather than actively connecting to a
      given server. The -tunnel and -via options are useful to create
@@ -54,7 +57,6 @@ main(int argc, char **argv)
       break;
     }
   }
-#endif
 
   /* Interpret resource specs and process any remaining command-line arguments
      (i.e. the VNC server name).  If the server name isn't specified on the
@@ -77,7 +79,8 @@ main(int argc, char **argv)
 
   /* Tell the VNC server which pixel format and encodings we want to use */
 
-  SetFormatAndEncodings();
+  SendSetPixelFormat();
+  SendSetEncodings();
 
   /* Now enter the main loop, processing VNC messages. */
 
@@ -92,7 +95,8 @@ main(int argc, char **argv)
   }
 
     /* Save to user-specified file */
-  ShrinkBuffer(&appData.rectX, &appData.rectY, &appData.rectWidth, &appData.rectHeight);
+  ShrinkBuffer(&appData.rectX, &appData.rectY, &appData.rectWidth, &appData.rectHeight,
+               appData.rectXNegative, appData.rectYNegative);
   write_JPEG_file(appData.outputFilename, appData.saveQuality, appData.rectWidth, appData.rectHeight);
   if (!appData.quiet) {
       fprintf(stderr, "Image saved from %s %dx%d screen to ", vncServerName,

@@ -28,6 +28,11 @@ static const char *ID = "$Id$";
 #include <sys/wait.h>
 #include <sys/time.h>
 #include <sys/utsname.h>
+
+typedef int SOCKET;
+#else
+#include <winsock2.h>
+#define close(x) closesocket(x)
 #endif
 
 #include "vncsnapshot.h"
@@ -50,11 +55,7 @@ int listenPort = 0, flashPort = 0;
 void
 listenForIncomingConnections(int *argc, char **argv, int listenArgIndex)
 {
-#ifdef WIN32
-	fprintf(stderr, "%s: -listen not supported on Windows\n", programName);
-	exit(1);
-#else
-  int listenSocket, flashSocket, sock;
+  SOCKET listenSocket, flashSocket, sock;
   fd_set fds;
   char flashUser[256];
   int n;
@@ -86,10 +87,11 @@ listenForIncomingConnections(int *argc, char **argv, int listenArgIndex)
 
   while (True) {
 
+#ifndef WIN32
     /* reap any zombies */
     int status, pid;
     while ((pid= wait3(&status, WNOHANG, (struct rusage *)0))>0);
-
+#endif
 
     FD_ZERO(&fds); 
 
@@ -102,7 +104,7 @@ listenForIncomingConnections(int *argc, char **argv, int listenArgIndex)
 
       sock = AcceptTcpConnection(flashSocket);
       if (sock < 0) exit(1);
-      n = read(sock, flashUser, 255);
+      n = recv(sock, flashUser, 255, 0);
       if (n > 0) {
 	flashUser[n] = 0;
       }
@@ -112,7 +114,6 @@ listenForIncomingConnections(int *argc, char **argv, int listenArgIndex)
     if (FD_ISSET(listenSocket, &fds)) {
       rfbsock = AcceptTcpConnection(listenSocket);
       if (rfbsock < 0) exit(1);
-      if (!SetNonBlocking(rfbsock)) exit(1);
 
       /* Unlike a standard VNC client, we don't continue to listen. */
       /* Return to caller. */
@@ -122,5 +123,4 @@ listenForIncomingConnections(int *argc, char **argv, int listenArgIndex)
 
     }
   }
-#endif
 }

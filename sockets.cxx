@@ -1,4 +1,5 @@
 /*
+ *  Copyright (C) 2002 RealVNC Ltd.
  *  Copyright (C) 1999 AT&T Laboratories Cambridge.  All Rights Reserved.
  *
  *  This is free software; you can redistribute it and/or modify
@@ -18,13 +19,14 @@
  */
 
 /*
- * sockets.c - functions to deal with sockets.
+ * sockets.cxx - functions to deal with sockets.
  */
 static const char *ID = "$Id$";
 
 #ifdef WIN32
 #include <winsock2.h>
 #define close(x) closesocket(x)
+typedef int socklen_t;
 #else
 #include <unistd.h>
 #include <sys/socket.h>
@@ -36,112 +38,113 @@ static const char *ID = "$Id$";
 #include <fcntl.h>
 #endif
 
-#include <assert.h>
+extern "C" {
 #include "vncsnapshot.h"
+}
 
-void PrintInHex(char *buf, int len);
+#include <rdr/FdInStream.h>
+#include <rdr/FdOutStream.h>
+#include <rdr/Exception.h>
 
-Bool errorMessageOnReadFailure = True;
+extern "C" { void PrintInHex(char *buf, int len); }
 
-#define BUF_SIZE 8192
-static char buf[BUF_SIZE];
-static char *bufoutptr = buf;
-static unsigned int buffered = 0;
+
+int rfbsock;
+rdr::FdInStream* fis;
+rdr::FdOutStream* fos;
+Bool sameMachine = False;
+
+static Bool rfbsockReady = False;
 
 /*
- * ReadFromRFBServer is called whenever we want to read some data from the RFB
- * server.  It is non-trivial for two reasons:
+ * InitializeSockets is called on startup. It will do any required one-time setup
+ * for the network.
  *
- * 1. For efficiency it performs some intelligent buffering, avoiding invoking
- *    the read() system call too often.  For small chunks of data, it simply
- *    copies the data out of an internal buffer.  For large amounts of data it
- *    reads directly into the buffer provided by the caller.
+ * On *nix systems, it does nothing.
  *
- * 2. Whenever read() would block, it invokes the Xt event dispatching
- *    mechanism to process X events.  In fact, this is the only place these
- *    events are processed, as there is no XtAppMainLoop in the program.
+ * On Windows, it initializes Windows Sockets.
+ */
+extern "C" Bool
+InitializeSockets(void)
+{
+#ifdef WIN32
+    WORD wVersionRequested;
+    WSADATA wsaData;
+    int err;
+
+    wVersionRequested = MAKEWORD( 2, 2 );
+
+    err = WSAStartup( wVersionRequested, &wsaData );
+    if ( err != 0 ) {
+        fprintf(stderr, "Cannot initialize Windows Sockets\n");
+        return False;
+    }
+
+/* Confirm that the WinSock DLL supports 2.2.*/
+/* Note that if the DLL supports versions greater    */
+/* than 2.2 in addition to 2.2, it will still return */
+/* 2.2 in wVersion since that is the version we      */
+/* requested.                                        */
+ 
+    if ( LOBYTE( wsaData.wVersion ) != 2 ||
+         HIBYTE( wsaData.wVersion ) != 2 ) {
+        fprintf(stderr, "Cannot get proper version of Windows Sockets\n");
+        WSACleanup( );
+        return False; 
+    }
+
+/* The WinSock DLL is acceptable. Proceed. */
+#endif
+    return True;
+}
+
+/*
+ * ConnectToRFBServer.
  */
 
-Bool
-ReadFromRFBServer(char *out, unsigned int n)
+Bool ConnectToRFBServer(const char *hostname, int port)
 {
-  if (n <= buffered) {
-    memcpy(out, bufoutptr, n);
-    bufoutptr += n;
-    buffered -= n;
-    return True;
+  int sock = ConnectToTcpAddr(hostname, port);
+
+  if (sock < 0) {
+    fprintf(stderr,"Unable to connect to VNC server\n");
+    return False;
   }
 
-  memcpy(out, bufoutptr, buffered);
+  return SetRFBSock(sock);
+}
 
-  out += buffered;
-  n -= buffered;
+Bool SetRFBSock(int sock)
+{
+  try {
+    rfbsock = sock;
+    fis = new rdr::FdInStream(rfbsock);
+    fos = new rdr::FdOutStream(rfbsock);
 
-  bufoutptr = buf;
-  buffered = 0;
+    struct sockaddr_in peeraddr, myaddr;
+    socklen_t addrlen = sizeof(struct sockaddr_in);
 
-  if (n <= BUF_SIZE) {
+    getpeername(sock, (struct sockaddr *)&peeraddr, &addrlen);
+    getsockname(sock, (struct sockaddr *)&myaddr, &addrlen);
 
-    while (buffered < n) {
-      int i = recv(rfbsock, buf + buffered, BUF_SIZE - buffered, 0);
-      if (i <= 0) {
-	if (i < 0) {
-#ifndef WIN32
-	  if (errno == EWOULDBLOCK || errno == EAGAIN) {
-	    i = 0;
-	  } else {
-#else
-	  {
-#endif
-	    fprintf(stderr,programName);
-	    perror(": read");
-	    return False;
-	  }
-	} else {
-	  if (errorMessageOnReadFailure) {
-	    fprintf(stderr,"%s: VNC server closed connection\n",programName);
-	  }
-	  return False;
-	}
-      }
-      buffered += i;
-    }
-
-    memcpy(out, bufoutptr, n);
-    bufoutptr += n;
-    buffered -= n;
-    return True;
-
-  } else {
-
-    while (n > 0) {
-      int i = recv(rfbsock, out, n, 0);
-      if (i <= 0) {
-	if (i < 0) {
-#ifndef WIN32
-	  if (errno == EWOULDBLOCK || errno == EAGAIN) {
-	    i = 0;
-	  } else {
-#else
-	  {
-#endif
-	    fprintf(stderr,programName);
-	    perror(": read");
-	    return False;
-	  }
-	} else {
-	  if (errorMessageOnReadFailure) {
-	    fprintf(stderr,"%s: VNC server closed connection\n",programName);
-	  }
-	  return False;
-	}
-      }
-      out += i;
-      n -= i;
-    }
+    sameMachine = (peeraddr.sin_addr.s_addr == myaddr.sin_addr.s_addr);
 
     return True;
+  } catch (rdr::Exception& e) {
+    fprintf(stderr,"initialiseInStream: %s\n",e.str());
   }
+  return False;
+}
+
+Bool ReadFromRFBServer(char *out, unsigned int n)
+{
+  try {
+    fis->readBytes(out, n);
+    return True;
+  } catch (rdr::Exception& e) {
+    fprintf(stderr,"ReadFromRFBServer: %s\n",e.str());
+  }
+  return False;
 }
 
 
@@ -149,64 +152,38 @@ ReadFromRFBServer(char *out, unsigned int n)
  * Write an exact number of bytes, and don't return until you've sent them.
  */
 
-Bool
-WriteExact(int sock, char *buf, int n)
+Bool WriteToRFBServer(char *buf, int n)
 {
-#ifndef WIN32
-  fd_set fds;
-#endif
-  int i = 0;
-  int j;
-
-  while (i < n) {
-    j = send(sock, buf + i, (n - i), 0);
-    if (j <= 0) {
-      if (j < 0) {
-#ifndef WIN32
-	if (errno == EWOULDBLOCK || errno == EAGAIN) {
-	  FD_ZERO(&fds);
-	  FD_SET(rfbsock,&fds);
-
-	  if (select(rfbsock+1, NULL, &fds, NULL, NULL) <= 0) {
-	    fprintf(stderr,programName);
-	    perror(": select");
-	    return False;
-	  }
-	  j = 0;
-	} else {
-	  fprintf(stderr,programName);
-	  perror(": write");
-	  return False;
-	}
-#else
-	  fprintf(stderr,programName);
-	  perror(": write");
-	  return False;
-#endif
-      } else {
-	fprintf(stderr,"%s: write failed\n",programName);
-	return False;
-      }
-    }
-    i += j;
+  try {
+    fos->writeBytes(buf, n);
+    fos->flush();
+    return True;
+  } catch (rdr::Exception& e) {
+    fprintf(stderr,"WriteExact: %s\n",e.str());
   }
-  return True;
+  return False;
 }
 
 
 /*
- * ConnectToTcpAddr connects to the given TCP port.
+ * ConnectToTcpAddr connects to the given host and port.
  */
 
-int
-ConnectToTcpAddr(unsigned int host, int port)
+int ConnectToTcpAddr(const char* hostname, int port)
 {
   int sock;
   struct sockaddr_in addr;
   int one = 1;
+  unsigned int host;
 
+  if (!StringToIPAddr(hostname, &host)) {
+    fprintf(stderr,"Couldn't convert '%s' to host address\n", hostname);
+    return -1;
+  }
+
+  memset(&addr, 0, sizeof(addr));
   addr.sin_family = AF_INET;
-  addr.sin_port = htons((unsigned short) port);
+  addr.sin_port = htons(port);
   addr.sin_addr.s_addr = host;
 
   sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -274,15 +251,15 @@ FindFreeTcpPort(void)
  * ListenAtTcpPort starts listening at the given TCP port.
  */
 
-int
-ListenAtTcpPort(int port)
+int ListenAtTcpPort(int port)
 {
   int sock;
   struct sockaddr_in addr;
   int one = 1;
 
+  memset(&addr, 0, sizeof(addr));
   addr.sin_family = AF_INET;
-  addr.sin_port = htons((unsigned short) port);
+  addr.sin_port = htons(port);
   addr.sin_addr.s_addr = INADDR_ANY;
 
   sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -322,12 +299,11 @@ ListenAtTcpPort(int port)
  * AcceptTcpConnection accepts a TCP connection.
  */
 
-int
-AcceptTcpConnection(int listenSock)
+int AcceptTcpConnection(int listenSock)
 {
   int sock;
   struct sockaddr_in addr;
-  int addrlen = sizeof(addr);
+  socklen_t addrlen = sizeof(addr);
   int one = 1;
 
   sock = accept(listenSock, (struct sockaddr *) &addr, &addrlen);
@@ -350,60 +326,12 @@ AcceptTcpConnection(int listenSock)
 
 
 /*
- * SetNonBlocking sets a socket into non-blocking mode.
- */
-
-Bool
-SetNonBlocking(int sock)
-{
-#ifndef WIN32
-  if (fcntl(sock, F_SETFL, O_NONBLOCK) < 0) {
-    fprintf(stderr,programName);
-    perror(": AcceptTcpConnection: fcntl");
-    return False;
-  }
-#endif
-  return True;
-}
-
-
-/*
  * StringToIPAddr - convert a host string to an IP address.
  */
 
-Bool
-StringToIPAddr(const char *str, unsigned int *addr)
+Bool StringToIPAddr(const char *str, unsigned int *addr)
 {
   struct hostent *hp;
-
-#ifdef WIN32
-	WORD wVersionRequested;
-	WSADATA wsaData;
-	int err;
- 
-	wVersionRequested = MAKEWORD( 2, 2 );
- 
-	err = WSAStartup( wVersionRequested, &wsaData );
-	if ( err != 0 ) {
-		fprintf(stderr, "Cannot initialize Windows Sockets\n");
-		return False;
-	}
- 
-/* Confirm that the WinSock DLL supports 2.2.*/
-/* Note that if the DLL supports versions greater    */
-/* than 2.2 in addition to 2.2, it will still return */
-/* 2.2 in wVersion since that is the version we      */
-/* requested.                                        */
- 
-	if ( LOBYTE( wsaData.wVersion ) != 2 ||
-        HIBYTE( wsaData.wVersion ) != 2 ) {
-		fprintf(stderr, "Cannot get proper version of Windows Sockets\n");
-		WSACleanup( );
-		return False; 
-	}
- 
-/* The WinSock DLL is acceptable. Proceed. */
-#endif
 
   if (strcmp(str,"") == 0) {
     *addr = 0; /* local */
@@ -412,7 +340,7 @@ StringToIPAddr(const char *str, unsigned int *addr)
 
   *addr = inet_addr(str);
 
-  if (*addr != -1)
+  if (*addr != (unsigned int)-1)
     return True;
 
   hp = gethostbyname(str);
@@ -427,28 +355,10 @@ StringToIPAddr(const char *str, unsigned int *addr)
 
 
 /*
- * Test if the other end of a socket is on the same machine.
- */
-
-Bool
-SameMachine(int sock)
-{
-  struct sockaddr_in peeraddr, myaddr;
-  int addrlen = sizeof(struct sockaddr_in);
-
-  getpeername(sock, (struct sockaddr *)&peeraddr, &addrlen);
-  getsockname(sock, (struct sockaddr *)&myaddr, &addrlen);
-
-  return (peeraddr.sin_addr.s_addr == myaddr.sin_addr.s_addr);
-}
-
-
-/*
  * Print out the contents of a packet for debugging.
  */
 
-void
-PrintInHex(char *buf, int len)
+void PrintInHex(char *buf, int len)
 {
   int i, j;
   char c, str[17];

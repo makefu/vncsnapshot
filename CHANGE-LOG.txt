@@ -1,3 +1,11 @@
+1.1
+ * Merged RealVNC 3.3.6 sources
+ * Now supports both TightVNC 'tight' and 'zlib' encodings and RealVNC
+   'zrle' encoding.
+ * Dropped beta status as I got no bug reports (in fact, no reports at all)
+ * -tunnel and -via options now supported for all platforms (not tested on Windows)
+ * Fix: coordinates of -0 (0 pixels from right/bottom edge) now work
+ * Win32 Release build works
 1.0 Beta 2
  * Added manual page
  * Updated zlib dependancy to version without security vunerability

@@ -29,6 +29,17 @@ static const char *ID = "$Id$";
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "vncsnapshot.h"
+#ifdef WIN32
+#define stat _stat
+#ifndef S_ISREG
+#define S_ISREG(x) (x & _S_IFREG)
+#endif
+#endif
+
+/* If S_ISLNK is not defined, assume links don't exist */
+#ifndef S_ISLNK
+#define S_ISLNK(x) (0)
+#endif
 
 /* True if there was -tunnel or -via option in the command line. */
 Bool tunnelSpecified = False;
@@ -164,7 +175,6 @@ processViaArgs(char **gatewayHost, char **remoteHost,
 static char *
 getCmdPattern(void)
 {
-#ifndef WIN32
   struct stat st;
   char *pattern;
 
@@ -180,9 +190,6 @@ getCmdPattern(void)
   }
 
   return pattern;
-#else
-  return NULL;
-#endif
 }
 
 /* Note: in fillCmdPattern() result points to a 1024-byte buffer */

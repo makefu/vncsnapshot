@@ -163,7 +163,7 @@ FillBufferRectangle(int x, int y, int w, int h, unsigned long pixel)
 
 
 void
-ShrinkBuffer(long *x, long *y, long *req_width, long *req_height)
+ShrinkBuffer(long *x, long *y, long *req_width, long *req_height, int oppositeX, int oppositeY)
 {
     int start;
     int stride;
@@ -175,9 +175,13 @@ ShrinkBuffer(long *x, long *y, long *req_width, long *req_height)
     */
     if (*x < 0) {
         *x = si.framebufferWidth + *x;
+    } else if (oppositeX) {
+        *x = si.framebufferWidth - *x;
     }
     if (*y < 0) {
         *y = si.framebufferHeight + *y;
+    } else if (oppositeY) {
+        *y = si.framebufferHeight - *y;
     }
     if (*x >= si.framebufferWidth || *x < 0) {
         fprintf(stderr, "%s: Requested rectangle *x <%ld> is outside screen width <%d>, using 0\n",

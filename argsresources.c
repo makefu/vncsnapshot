@@ -23,6 +23,7 @@
 static const char *ID = "$Id$";
 
 #include "vncsnapshot.h"
+#include "version.h"
 
 static int setNumber(int *argc, char ***argv, void *arg, int value);
 static int setString(int *argc, char ***argv, void *arg, int value);
@@ -111,7 +112,7 @@ void
 usage(void)
 {
   fprintf(stderr,
-	  "TightVNC snapshot version 1.2.1 (based on VNC 3.3.3r2)\n"
+	  "TightVNC snapshot version " VNC_SNAPSHOT_VERSION " (based on TightVNC 1.2.2 and RealVNC 3.3.6)\n"
 	  "\n"
 	  "Usage: %s [<OPTIONS>] [<HOST>]:<DISPLAY#> filename\n"
 	  "       %s [<OPTIONS>] -listen [<DISPLAY#>] filename\n"
@@ -189,14 +190,18 @@ GetArgsAndResources(int argc, char **argv)
                     programName, rect);
             usage();
         }
-        /* do not increment to get sign */
+        /* determine sign */
+        appData.rectXNegative = *end == '-';
+        end++;
         x = strtol(end, &end, 10);
         if (end == NULL || end == rect || (*end != '+' && *end != '-')) {
             fprintf(stderr, "%s: invalid rectangle specification %s\n",
                     programName, rect);
             usage();
         }
-        /* do not increment to get sign */
+        /* determine sign */
+        appData.rectYNegative = *end == '-';
+        end++;
         y = strtol(end, &end, 10);
         if (end == NULL || end == rect || *end != '\0') {
             fprintf(stderr, "%s: invalid rectangle specification %s\n",

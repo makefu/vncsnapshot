@@ -58,7 +58,13 @@ extern int endianTest;
 #define TUNNEL_PORT_OFFSET 5500
 #define SERVER_PORT_OFFSET 5900
 
+#ifdef WIN32
+/* This is for the NetworkSimplicty installation of SSH */
+#define DEFAULT_SSH_CMD "C:\\Program Files\\NetworkSimplicity\\ssh.exe"
+#else
 #define DEFAULT_SSH_CMD "/usr/bin/ssh"
+#endif
+
 #define DEFAULT_TUNNEL_CMD  \
   (DEFAULT_SSH_CMD " -f -L %L:localhost:%R %H sleep 20")
 #define DEFAULT_VIA_CMD     \
@@ -94,6 +100,8 @@ typedef struct {
 
   int quiet;
 
+    char rectXNegative; /* if non-zero, X or Y relative to opposite edge */
+    char rectYNegative;
   long rectWidth;
   long rectHeight;
   long rectX;
@@ -119,7 +127,7 @@ extern int AllocateBuffer();
 extern void CopyDataToScreen(char *buffer, int x, int y, int w, int h);
 extern char *CopyScreenToData(int x, int y, int w, int h);
 extern void FillBufferRectangle(int x, int y, int w, int h, unsigned long pixel);
-extern void ShrinkBuffer(long *x, long *y, long *req_width, long *req_height);
+extern void ShrinkBuffer(long *x, long *y, long *req_width, long *req_height, int oppositeX, int oppositeY);
 extern void write_JPEG_file (char * filename, int quality, int width, int height);
 
 /* colour.c */
@@ -140,7 +148,6 @@ extern void listenForIncomingConnections();
 
 /* rfbproto.c */
 
-extern int rfbsock;
 extern Bool canUseCoRRE;
 extern Bool canUseHextile;
 extern char *desktopName;
@@ -151,7 +158,8 @@ extern Bool newServerCutText;
 
 extern Bool ConnectToRFBServer(const char *hostname, int port);
 extern Bool InitialiseRFBConnection();
-extern Bool SetFormatAndEncodings();
+extern Bool SendSetPixelFormat();
+extern Bool SendSetEncodings();
 extern Bool SendIncrementalFramebufferUpdateRequest();
 extern Bool SendFramebufferUpdateRequest(int x, int y, int w, int h,
 					 Bool incremental);
@@ -162,20 +170,27 @@ extern Bool HandleRFBServerMessage();
 
 extern void PrintPixelFormat(rfbPixelFormat *format);
 
-/* sockets.c */
+/* sockets.cxx */
 
-extern Bool errorMessageOnReadFailure;
+extern Bool sameMachine;
+extern int rfbsock;
 
+extern Bool InitializeSockets(void);
+extern Bool ConnectToRFBServer(const char *hostname, int port);
+extern Bool SetRFBSock(int sock);
+extern void StartTiming();
+extern void StopTiming();
+extern int KbitsPerSecond();
+extern int TimeWaitedIn100us();
 extern Bool ReadFromRFBServer(char *out, unsigned int n);
-extern Bool WriteExact(int sock, char *buf, int n);
-extern int FindFreeTcpPort(void);
+extern Bool WriteToRFBServer(char *buf, int n);
+extern int ConnectToTcpAddr(const char* hostname, int port);
+extern int FindFreeTcpPort();
 extern int ListenAtTcpPort(int port);
-extern int ConnectToTcpAddr(unsigned int host, int port);
 extern int AcceptTcpConnection(int listenSock);
-extern Bool SetNonBlocking(int sock);
 
 extern Bool StringToIPAddr(const char *str, unsigned int *addr);
-extern Bool SameMachine(int sock);
+
 
 /* tunnel.c */
 
@@ -186,3 +201,11 @@ extern Bool createTunnel(int *argc, char **argv, int tunnelArgIndex);
 /* vncviewer.c */
 
 extern char *programName;
+
+/* zrle.cxx */
+extern Bool zrleDecode(int x, int y, int w, int h);
+
+/* getpass.c (win32) */
+#ifdef WIN32
+extern char *getpass(const char * prompt);
+#endif

@@ -1,4 +1,5 @@
 /*
+ *  Copyright (C) 2002 RealVNC Ltd.  All Rights Reserved.
  *  Copyright (C) 2000, 2001 Const Kaplinsky.  All Rights Reserved.
  *  Copyright (C) 2000 Tridia Corporation. All Rights Reserved.
  *  Copyright (C) 1999 AT&T Laboratories Cambridge. All Rights Reserved.
@@ -294,6 +295,7 @@ typedef struct {
 #define rfbEncodingZlib      6
 #define rfbEncodingTight     7
 #define rfbEncodingZlibHex   8
+#define rfbEncodingZRLE 16
 
 /*
  * Special encoding numbers:
@@ -551,6 +553,21 @@ typedef struct {
  */
 
 
+/*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ * ZRLE - encoding combining Zlib compression, tiling, palettisation and
+ * run-length encoding.
+ */
+
+typedef struct {
+    CARD32 length;
+} rfbZRLEHeader;
+
+#define sz_rfbZRLEHeader 4
+
+#define rfbZRLETileWidth 64
+#define rfbZRLETileHeight 64
+
+
 /*-----------------------------------------------------------------------------
  * SetColourMapEntries - these messages are only sent if the pixel
  * format uses a "colour map" (i.e. trueColour false) and the client has not
@@ -792,6 +809,10 @@ typedef struct {
 #define rfbButton1Mask 1
 #define rfbButton2Mask 2
 #define rfbButton3Mask 4
+#define rfbButton4Mask 8
+#define rfbButton5Mask 16
+#define rfbWheelUpMask rfbButton4Mask
+#define rfbWheelDownMask rfbButton5Mask
 
 #define sz_rfbPointerEventMsg 6
 

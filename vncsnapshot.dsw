@@ -15,6 +15,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "rdr"=.\rdr\rdr.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "vncsnapshot"=.\vncsnapshot.dsp - Package Owner=<4>
 
 Package=<5>
@@ -28,6 +40,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libjpeg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name rdr
     End Project Dependency
 }}}
 
