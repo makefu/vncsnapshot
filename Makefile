@@ -52,4 +52,16 @@ clean:
 
 reallyclean: clean
 	-rm -f *~
-# dependancies - manual
+# dependancies
+
+argsresources.o: argsresources.c vncsnapshot.h rfb.h rfbproto.h
+buffer.o: buffer.c vncsnapshot.h rfb.h rfbproto.h
+cursor.o: cursor.c vncsnapshot.h rfb.h rfbproto.h
+listen.o: listen.c vncsnapshot.h rfb.h rfbproto.h
+rfbproto.o: rfbproto.c vncsnapshot.h rfb.h rfbproto.h vncauth.h \
+  protocols/rre.c protocols/corre.c \
+  protocols/hextile.c protocols/zlib.c protocols/tight.c
+sockets.o: sockets.c vncsnapshot.h rfb.h rfbproto.h
+tunnel.o: tunnel.c vncsnapshot.h rfb.h rfbproto.h
+vncsnapshot.o: vncsnapshot.c vncsnapshot.h rfb.h rfbproto.h
+vncauth.o: vncauth.c stdhdrs.h rfb.h rfbproto.h vncauth.h d3des.h
