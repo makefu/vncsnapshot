@@ -57,6 +57,8 @@ Options cmdLineOptions[] = {
   {"-rect",          setString, &rect, 0, " wxh+x+y: define rectangle to capture (default entire screen)"},
   {"-verbose",       setFlag,   &appData.quiet, 0, ": output messages"},
   {"-vncQuality",    setNumber, &appData.qualityLevel, 0, " <JPEG-QUALITY-VALUE>: transmission quality level (0..9: 0-low, 9-high)"},
+  {"-fps",           setNumber, &appData.fps, 0, " <FPS>: Wait <FPS> seconds between snapshots, default 60"},
+  {"-count",         setNumber, &appData.count, 0, " <COUNT>: Capture <COUNT> images, default 1"},
   {NULL, NULL, NULL, 0}
 };
 
@@ -93,6 +95,8 @@ AppData appData = {
     0, 0,   /* rect width, height */
     0, 0,   /* rect x, y */
     0,      /* gotCursorPos (-cursor, -nocursor worked) */
+    60,     /* fps */
+    1,      /* count */
     };
 
 

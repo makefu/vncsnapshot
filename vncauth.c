@@ -29,13 +29,13 @@
  */
 static const char *ID = "$Id$";
 
-/*
+#ifndef WIN32
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-*/
+#endif
 
 #include "stdhdrs.h"
 #include "vncauth.h"
@@ -50,6 +50,48 @@ static const char *ID = "$Id$";
 
 unsigned char fixedkey[8] = {23,82,107,6,35,78,88,7};
 
+
+/*
+ * Encrypt a password and store it in a file.  Returns 0 if successful,
+ * 1 if the file could not be written.
+ */
+
+int
+vncEncryptAndStorePasswd(char *passwd, char *fname)
+{
+    FILE *fp;
+    int i;
+    unsigned char encryptedPasswd[8];
+
+    if ((fp = fopen(fname,"wb")) == NULL) return 1;
+
+#ifndef WIN32
+    chmod(fname, S_IRUSR|S_IWUSR);
+#endif
+
+    /* pad password with nulls */
+
+    for (i = 0; i < 8; i++) {
+	if (i < strlen(passwd)) {
+	    encryptedPasswd[i] = passwd[i];
+	} else {
+	    encryptedPasswd[i] = 0;
+	}
+    }
+
+    /* Do encryption in-place - this way we overwrite our copy of the plaintext
+       password */
+
+    deskey(fixedkey, EN0);
+    des(encryptedPasswd, encryptedPasswd);
+
+    for (i = 0; i < 8; i++) {
+	putc(encryptedPasswd[i], fp);
+    }
+  
+    fclose(fp);
+    return 0;
+}
 
 /*
  * Decrypt a password from a file.  Returns a pointer to a newly allocated

@@ -66,6 +66,10 @@ Real VNC <A HREF="http://wwww.realvnc.com">site</A>.
 
 <p>VNC Snapshot is a command-line program for VNC. It will save a JPEG image of the VNC server's
   screen.
+<p>Also included with the package is <b>vncpasswd</b>, to allow you to create password files if
+you do not have a Unix or Linux version of VNC available. Note that while this utility is in the
+Windows version of VNC Snapshot, it does <em>not</em> create a file usable by the Windows version
+of the VNC Server.
 <p>VNC Snapshot is derived from <A HREF="http://www.tightvnc.com">Tight
 VNC</A> [www.tightvnc.com] and <A HREF="http://www.realvnc.com">Real VNC</A> [www.realvnc.com].
 <p>Sources and binaries can be download from the VNCSnapshot Source Forge <A HREF="http://sourceforge.net/projects/vncsnapshot/">site</a>.
@@ -97,8 +101,8 @@ not include the cursor in the snapshot.
       <th align="left"> -passwd <em>filename</em> </th>
       <td> Read encrypted password from <em>filename</em> instead
       of from the console. The <em>filename</em> can be made with
-      the <code>vncpasswd</code> utility in the Unix and Linux
-      distributions of VNC.
+      the <code>vncpasswd</code> utility included in the vncsnapshot
+      distribution.
       </td>
     </tr>
     <tr>
@@ -153,6 +157,19 @@ all-black screen initially before sending the actual screen image. </td>
            <p>The default is the entire screen.
       </td>
     </tr>
+    <tr>
+      <th align="left"> -count <em>number</em></th>
+      <td> Take <em>number</em> snapshots; default 1. If greater than 1,
+           vncsnapshot will insert a five-digit sequence number just before
+	   the output file's extension; i.e. if you specify <b>out.jpeg</b>
+	   as the output file, it will create <b>out00001.jpeg</b>, <b>out00002.jpeg</b>,
+	   and so forth.</td>
+    </tr>
+    <tr>
+      <th align="left"> -fps <em>rate</em> </th>
+      <td> When taking multiple snapshots, take them every <em>rate</em> seconds; default 60.
+           </td>
+    </tr>
   </table>
   <H2><A NAME="examples">Example Command Lines</A></H2>
   <DL>
@@ -194,15 +211,15 @@ as <code> -rect 800x600-0-0</code>, which specifies the same region.
   </tr>
   <tr>
     <th align="left"> Version: </th>
-    <td> 1.1</td>
+    <td> 1.2</td>
   <tr>
   </tr>
     <th align="left"> Release Notes: </th>
-    <td> <A HREF="RELEASE-NOTES.txt">1.1 Release Notes </a></td>
+    <td> <A HREF="RELEASE-NOTES.txt">1.2 Release Notes </a></td>
   </tr>
   </tr>
     <th align="left"> Change Log: </th>
-    <td> <A HREF="CHANGE-LOG.txt">1.1 Change Log</a></td>
+    <td> <A HREF="CHANGE-LOG.txt">1.2 Change Log</a></td>
   </tr>
 </table>
 </body>

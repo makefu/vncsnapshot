@@ -102,13 +102,15 @@ typedef struct {
 
   int quiet;
 
-    char rectXNegative; /* if non-zero, X or Y relative to opposite edge */
-    char rectYNegative;
+  char rectXNegative; /* if non-zero, X or Y relative to opposite edge */
+  char rectYNegative;
   long rectWidth;
   long rectHeight;
   long rectX;
   long rectY;
-    char gotCursorPos;
+  char gotCursorPos;
+  int fps;
+  int count;	/* number of snapshots to grab */
 } AppData;
 
 extern AppData appData;
@@ -133,6 +135,7 @@ extern void FillBufferRectangle(int x, int y, int w, int h, unsigned long pixel)
 extern void ShrinkBuffer(long x, long y, long req_width, long req_height);
 extern void write_JPEG_file (char * filename, int quality, int width, int height);
 extern int BufferIsBlank();
+extern int BufferWritten();
 
 /* colour.c */
 

@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "libjpeg"=.\libjpeg\libjpeg.dsp - Package Owner=<4>
+Project: "libjpeg"=".\libjpeg\libjpeg.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "rdr"=.\rdr\rdr.dsp - Package Owner=<4>
+Project: "rdr"=".\rdr\rdr.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -27,7 +27,19 @@ Package=<4>
 
 ###############################################################################
 
-Project: "vncsnapshot"=.\vncsnapshot.dsp - Package Owner=<4>
+Project: "vncpasswd"=".\vncpasswd.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "vncsnapshot"=".\vncsnapshot.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -48,7 +60,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "zlib"=.\zlib\zlib.dsp - Package Owner=<4>
+Project: "zlib"=".\zlib\zlib.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

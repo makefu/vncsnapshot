@@ -9,6 +9,7 @@ MANIFEST
 Makefile
 README
 RELEASE-NOTES.txt
+RELEASE-NOTES-1.1.txt
 argsresources.c
 buffer.c
 cursor.c
@@ -16,6 +17,7 @@ d3des.c
 d3des.h
 getpass.c
 listen.c
+make_release_bin
 rfb.h
 rfbproto.c
 rfbproto.h
@@ -25,6 +27,8 @@ tunnel.c
 version.h
 vncauth.c
 vncauth.h
+vncpasswd.c
+vncpasswd.dsp
 vncsnapshot.c
 vncsnapshot.dsp
 vncsnapshot.dsw

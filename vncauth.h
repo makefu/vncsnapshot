@@ -31,6 +31,7 @@
 #define MAXPWLEN 8
 #define CHALLENGESIZE 16
 
+extern int vncEncryptAndStorePasswd(char *passwd, char *fname);
 extern char *vncDecryptPasswdFromFile(char *fname);
 extern void vncEncryptBytes(unsigned char *bytes, char *passwd);
 extern void vncEncryptPasswd(unsigned char *encryptedPasswd, char *passwd);

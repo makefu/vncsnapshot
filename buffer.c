@@ -34,6 +34,7 @@ static void BufferPixelToRGB(unsigned long pixel, int *r, int *g, int *b);
 
 static char * rawBuffer = NULL;
 static char   bufferBlank = 1;
+static char   bufferWritten = 0;
 
 #define RAW_BYTES_PER_PIXEL 3   /* size of pixel in raw buffer */
 #define MY_BYTES_PER_PIXEL 4    /* size of pixel in VNC buffer */
@@ -99,6 +100,8 @@ CopyDataToScreen(char *buffer, int x, int y, int w, int h)
     stride = si.framebufferWidth * RAW_BYTES_PER_PIXEL - w * RAW_BYTES_PER_PIXEL;
     start = (x + y * si.framebufferWidth) * RAW_BYTES_PER_PIXEL;
 
+    bufferWritten = 1;
+
     for (row = 0; row < h; row++) {
         for (col = 0; col < w; col++) {
             bufferBlank &= buffer[0] == 0 &&
@@ -154,6 +157,7 @@ FillBufferRectangle(int x, int y, int w, int h, unsigned long pixel)
     BufferPixelToRGB(pixel, &r, &g, &b);
 
     bufferBlank &= r == 0 && g == 0 && b == 0;
+    bufferWritten = 1;
 
     stride = si.framebufferWidth * RAW_BYTES_PER_PIXEL - w * RAW_BYTES_PER_PIXEL;
     start = (x + y * si.framebufferWidth) * RAW_BYTES_PER_PIXEL;
@@ -171,6 +175,12 @@ int
 BufferIsBlank()
 {
     return bufferBlank;
+}
+
+int
+BufferWritten()
+{
+    return bufferWritten;
 }
 
 /*

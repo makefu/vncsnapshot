@@ -603,7 +603,14 @@ HandleRFBServerMessage()
 	if (!ReadFromRFBServer((char *)&cr, sz_rfbCopyRect))
 	  return False;
 
-	cr.srcX = Swap16IfLE(cr.srcX);
+          if (!BufferWritten()) {
+            /* Ignore attempts to do copy-rect when we have nothing to
+             * copy from.
+             */
+            break;
+        }
+
+ 	cr.srcX = Swap16IfLE(cr.srcX);
 	cr.srcY = Swap16IfLE(cr.srcY);
 
 	/* If RichCursor encoding is used, we should extend our
@@ -673,7 +680,7 @@ HandleRFBServerMessage()
       /* RealVNC sometimes returns an initial black screen. */
       if (BufferIsBlank() && appData.ignoreBlank) {
           if (!appData.quiet && appData.ignoreBlank != 1) {
-              /* user did not specify both -quiet and -ignoreblank */
+              /* user did not specify either -quiet or -ignoreblank */
               fprintf(stderr, "Warning: discarding received blank screen (use -allowblank to accept,\n   or -ignoreblank to suppress this message)\n");
               appData.ignoreBlank = 1;
           }
@@ -726,6 +733,16 @@ HandleRFBServerMessage()
 #define GET_PIXEL16(pix, ptr) (((CARD8*)&(pix))[0] = *(ptr)++, \
 			       ((CARD8*)&(pix))[1] = *(ptr)++)
 
+#ifdef __APPLE__
+/* Apple compilation appears to be broken.*/
+static inline void GET_PIXEL32(void *pix, CARD8 *ptr)
+{
+    ((CARD8*)&(pix))[0] = *(ptr)++;
+    ((CARD8*)&(pix))[1] = *(ptr)++;
+    ((CARD8*)&(pix))[2] = *(ptr)++;
+    ((CARD8*)&(pix))[3] = *(ptr)++;
+}
+#endif
 #define GET_PIXEL32(pix, ptr) (((CARD8*)&(pix))[0] = *(ptr)++, \
 			       ((CARD8*)&(pix))[1] = *(ptr)++, \
 			       ((CARD8*)&(pix))[2] = *(ptr)++, \

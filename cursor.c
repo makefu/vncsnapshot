@@ -232,6 +232,10 @@ void SoftCursorLockArea(int x, int y, int w, int h)
 {
   int newX, newY;
 
+  if (!BufferWritten()) {
+      return;    /* no cursor to hide */
+  }
+
   if (!prevSoftCursorSet)
     return;
 

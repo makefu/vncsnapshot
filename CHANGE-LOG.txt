@@ -1,3 +1,8 @@
+1.2
+ * Upgraded Windows build to Zlib 1.2.1
+ * Added vncpasswd to the build
+ * Fixed bug where snapshot thought it had got a non-blank screen when
+   in fact it hadn't (bug resulted in blank screen captures)
 1.1
  * Included UltraVNC RFB definitions in header files. UltraVNC encodings
    and scalings are not supported yet, however.

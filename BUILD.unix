@@ -42,8 +42,13 @@ Other Makefile configuration items:
   CC is set 'gcc'. On non-Linux systems, such as Solaris, you may want
   to set this to something else such as 'cc' or 'acc'.
 
+  Likewise, CXX is set 'g++'. Again, you may want to set this to something
+  else such as 'CC'.
+
   CDEBUGFLAGS is set to '-O2'. This is appropriate for gcc; other
   compilers may want '-O'; or, you may wish to set this to '-g' for
   debugging.
 
+You can also look at make_release_bin; this script is used by the maintainer
+to build vncsnapshot on various flavours of Unix and Linux.
 < $Id$ >
