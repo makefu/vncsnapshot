@@ -1,0 +1,5 @@
+1.0 Beta 2
+ * Added manual page
+ * Updated zlib dependancy to version without security vunerability
+ * Updated web page to include author's e-mail
+ * Updated BUILD.unix and BUILD.win32 to point to official JPEG and zlib sites

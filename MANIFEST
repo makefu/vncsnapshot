@@ -4,6 +4,7 @@ BUGS
 BUILD
 BUILD.unix
 BUILD.win32
+CHANGE-LOG.txt
 MANIFEST
 Makefile
 README
@@ -27,6 +28,7 @@ vncsnapshot.dsp
 vncsnapshot.dsw
 vncsnapshot.c
 vncsnapshot.h
+vncsnapshot.man1
 web-page.html
 libjpeg/Makefile.bcc32
 libjpeg/jconfig.h
