@@ -92,6 +92,7 @@ AppData appData = {
     100,    /* saveQuality */
     NULL,   /* outputFilename */
     0,      /* quiet */
+    0, 0,   /* rectXNegative, rectYNegative */
     0, 0,   /* rect width, height */
     0, 0,   /* rect x, y */
     0,      /* gotCursorPos (-cursor, -nocursor worked) */
