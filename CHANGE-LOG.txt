@@ -1,3 +1,5 @@
+1.2b
+ * Bug fix from David Rorex for listen mode, thank you
 1.2a
  * Fixed bug where the snapshot, by default, would start 60 pixels
    down from the top of the screen
