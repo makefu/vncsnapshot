@@ -115,7 +115,7 @@ listenForIncomingConnections(int *argc, char **argv, int listenArgIndex)
     if (FD_ISSET(listenSocket, &fds)) {
       rfbsock = AcceptTcpConnection(listenSocket);
       if (rfbsock < 0) exit(1);
-      SetFRBSock(rfbsock); /* thanks to David Rorex for this fix */
+      SetRFBSock(rfbsock); /* thanks to David Rorex for this fix */
 
       /* Unlike a standard VNC client, we don't continue to listen. */
       /* Return to caller. */
