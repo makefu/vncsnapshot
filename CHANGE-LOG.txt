@@ -1,4 +1,8 @@
+1.3
+ * New feature: -nullpasswd option, allow blank (null) password
+   when entering password interactively
 1.2b
+ * This version not released.
  * Bug fix from David Rorex for listen mode, thank you
 1.2a
  * Fixed bug where the snapshot, by default, would start 60 pixels

@@ -156,7 +156,6 @@ InitialiseRFBConnection()
   char *reason;
   CARD8 challenge[CHALLENGESIZE];
   char *passwd;
-  int i;
   rfbClientInitMsg ci;
 
   if (!ReadFromRFBServer(pv, sz_rfbProtocolVersionMsg)) return False;
@@ -205,7 +204,10 @@ InitialiseRFBConnection()
   case rfbVncAuth:
     if (!ReadFromRFBServer((char *)challenge, CHALLENGESIZE)) return False;
 
-    if (appData.passwordFile) {
+    /* If -nullpassword was specified, supply just that */
+    if (appData.nullPassword) {
+      passwd = "";
+    } else if (appData.passwordFile) {
       passwd = vncDecryptPasswdFromFile(appData.passwordFile);
       if (!passwd) {
 	fprintf(stderr,"Cannot read valid password from file \"%s\"\n",
@@ -216,9 +218,12 @@ InitialiseRFBConnection()
       passwd = getpass("Password: ");
     }
 
-    if ((!passwd) || (strlen(passwd) == 0)) {
+    if (passwd == NULL) {
       fprintf(stderr,"Reading password failed\n");
       return False;
+    }
+    if (!appData.nullPassword && strlen(passwd) == 0) {
+      fprintf(stderr, "Warning: null password provided, proceeding with authetication\n");
     }
     if (strlen(passwd) > 8) {
       passwd[8] = '\0';
@@ -227,9 +232,7 @@ InitialiseRFBConnection()
     vncEncryptBytes(challenge, passwd);
 
 	/* Lose the password from memory */
-    for (i = strlen(passwd); i >= 0; i--) {
-      passwd[i] = '\0';
-    }
+    if (!appData.nullPassword) memset(passwd, '\0', strlen(passwd));
 
     if (!WriteToRFBServer((char *)challenge, CHALLENGESIZE)) return False;
 

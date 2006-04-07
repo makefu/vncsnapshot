@@ -52,6 +52,7 @@ Options cmdLineOptions[] = {
   {"-nocursor",      setFlag,   &appData.useRemoteCursor, 0, ": do not include remote cursor"},
   {"-nojpeg",        setFlag,   &appData.enableJPEG, 0, ": do not use JPEG transmission encoding"},
   {"-passwd",        setString, &appData.passwordFile, 0, " <PASSWD-FILENAME>: read password from file"},
+  {"-nullpasswd",      setFlag,   &appData.nullPassword, 1, ": force an empty password"},
   {"-quality",       setNumber, &appData.saveQuality, 0, " <JPEG-QUALITY-VALUE>: output file quality level, percent (0..100)"},
   {"-quiet",         setFlag,   &appData.quiet, 1, ": do not output messages"},
   {"-rect",          setString, &rect, 0, " wxh+x+y: define rectangle to capture (default entire screen)"},
@@ -83,6 +84,7 @@ char *vncServerName;
 AppData appData = {
     NULL,   /* encodingsString */
     NULL,   /* passwordFile */
+    0,      /* nullPassword */
     0,      /* debug */
     4,      /* compressLevel */
     9,      /* qualityLevel */

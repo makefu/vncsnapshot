@@ -65,9 +65,14 @@ it).
 Do not connect to a server; wait for the server to
 connect to the specified local "display". Cannot be used with \fB\-tunnel\fP or \fB\-via\fP options.
 .TP
+\fB\-nullpasswd\fP
+Use a null (blank) password for authentication. This can be useful for servers that have
+a password for full control, and a blank password for view-only.
+.TP
 \fB\-passwd\fR \fIfilename\fP
 Read encrypted password from \fIfilename\fP instead of from the console. The \fIfilename\fP can be made with the
-vncpasswd utility included with the vncsnapshot release.
+vncpasswd utility included with the vncsnapshot release. Note that vncpasswd will not create
+blank passwords; use the -nullpasswd option instead.
 .TP
 \fB\-quality \fIquality\fP
 Use the specified JPEG image quality (0-100) for the output file.

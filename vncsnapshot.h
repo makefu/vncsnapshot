@@ -87,6 +87,7 @@ typedef struct {
   char *encodingsString;
 
   char *passwordFile;
+  Bool	nullPassword;	/* suppress password altogether */
 
   Bool debug;
 
